@@ -70,19 +70,20 @@
             cipherText = "";
             let finalMsg = msg.split(" ").join("");
             finalMsg = finalMsg.toLowerCase();
+            console.log(finalMsg);
             let finalCMsgPos = 0;
             // Initialize key positions that will be used to change original key
             let keyText = [];
             let cipherPos = [];
             if (document.getElementById("keyValue").value == "" || document.getElementById('messageValue').value == ""){
-                document.getElementById("finalMessage").innerHTML = "The values for either the key or the message is blank, please type in the wanted values";
+                document.getElementById("finalMessage").innerHTML = "The values for either the key and/or the message is blank, please type in the wanted values";
                 return;
             }
             keyText[0] = alphabetChar.indexOf(key.charAt(0));
             for (var h = 1; h < finalMsg.length; h++){
                 keyText[h] = alphabetChar.indexOf(key.charAt(h % key.length));
             }
-
+            //Vigenère Cipher encryption algorithm
             for (var i = 0; i < finalMsg.length; i++){
                 msgPos = alphabetChar.indexOf(finalMsg.charAt(i));
                 // Shifts the Vigenère Cipher by the product of the key length provided
@@ -97,24 +98,26 @@
         }
 
         function decryptMsg(key, msg){
-            // Initialize key positions that will be used to change original key
             let keyText = [];
             let plainPos = [];
             let finalMsgPos = 0;
             plainText = "";
+            let finalMsg = msg.split(" ").join("");
+            finalMsg = finalMsg.toLowerCase();
+            console.log(finalMsg);
             
             if (document.getElementById("keyValue").value == "" || document.getElementById('messageValue').value == ""){
-                document.getElementById("finalMessage").innerHTML = "The values for either the key or the message is blank, please type in the wanted values";
+                document.getElementById("finalMessage").innerHTML = "The values for either the key and/or the message is blank, please type in the wanted values";
                 return;
             }
-
+            // Initialize key positions that will be used to change original key
             keyText[0] = alphabetChar.indexOf(key.charAt(0));
-            for (var h = 1; h < msg.length; h++){
+            for (var h = 1; h < finalMsg.length; h++){
                 keyText[h] = alphabetChar.indexOf(key.charAt(h % key.length));
             }
-
-            for (var i = 0; i < msg.length; i++){
-                msgPos = alphabetChar.indexOf(msg.charAt(i));
+            //Vigenère Cipher encryption algorithm
+            for (var i = 0; i < finalMsg.length; i++){
+                msgPos = alphabetChar.indexOf(finalMsg.charAt(i));
                 finalMsgPos = (msgPos - keyText[i] + 1) - (key.length * key.length);
                 plainPos[i] =mod((mod(finalMsgPos, 26) - 1), 26);
                 plainText += alphabetChar.charAt(plainPos[i]);
