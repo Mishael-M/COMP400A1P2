@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>COMP 400 Assignment 2 Project 1</title>
+  <meta name="description" content="COMP 400 Assignment 1 Project 2">
+  <meta name="Mishael Magsanoc" content="COMP 400">
+
+</head>
+<style>
+    body, html {
+        height: 100%;
+        display: grid;
+        overflow: hidden;
+    }
+
+    
+    h1, h2, h3, div {
+        margin: auto;
+    }
+    input[type="text"]{
+    font-size:24px;
+        margin:auto;
+    }
+</style>
+<body>
+    <h1>Vigenère Cipher With a Twist</h1>
+    <h2>The Vigenère Cipher will rearrange the letters based on the chosen key</h2>
+    <h2>You are able to choose your own key or generate a random one below with a minimum of 4 characters and maximum of 10 characters</h2>
+    <h2>Generate a random Key</h2>
+    <button onclick="genKey()">Generate Key</button>
+    <h3 id = "key"></h3>
+    <h2>Encrypt or decrypt a message below</h2>
+    <h3>Enter the key in the box below</h3>
+    <input type="text" id="keyValue" value="" required minlength="4" maxlength="10" size="10">
+    <h3>Enter the message you would like to encode below</h3>
+    <input type="text" id="messageValue" value="">
+    <button onclick="encryptMsg(document.getElementById('keyValue').value, document.getElementById('messageValue').value)">Encrypt</button>
+    <button onclick="decryptMsg(document.getElementById('keyValue').value, document.getElementById('messageValue').value)">Decrypt</button>
+    <h3 id = "finalMessage"></h3>
+
+
+  <script>
+        //Initialize starting variable for alphabet
+        var alphabetChar = "abcdefghijklmnopqrstuvwxyz";
+        var key = "";
+        var cipherText = "";
+        var plainText = "";
+
+        // Creates the modulo function because Javacript provides a remainder function not a modulo function
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+        //Generates keys for users if they cannot think of their own, from a minimum of 4 characters to a maximum of 10 characters
+        function genKey(){
+            var key = "";
+            var randomKeyLength = (Math.floor((Math.random() * 7) + 4));
+            for (var x = 0; x < randomKeyLength; x++){
+                key += alphabetChar.charAt(Math.floor(Math.random() * (alphabetChar.length)));
+            }
+            document.getElementById("key").innerHTML = "The generated key is " + key;
+            document.getElementById("keyValue").value = key
+            return key;
+        }
+
+        // Encryps the message using a variant of Vigenère Cipher where the final position of each letter is shifted by 
+        // the product of the length of the key provided
+        function encryptMsg(key, msg){
+            cipherText = "";
+            let finalMsg = msg.split(" ").join("");
+            finalMsg = finalMsg.toLowerCase();
+            let finalCMsgPos = 0;
+            // Initialize key positions that will be used to change original key
+            let keyText = [];
+            let cipherPos = [];
+            if (document.getElementById("keyValue").value == "" || document.getElementById('messageValue').value == ""){
+                document.getElementById("finalMessage").innerHTML = "The values for either the key or the message is blank, please type in the wanted values";
+                return;
+            }
+            keyText[0] = alphabetChar.indexOf(key.charAt(0));
+            for (var h = 1; h < finalMsg.length; h++){
+                keyText[h] = alphabetChar.indexOf(key.charAt(h % key.length));
+            }
+
+            for (var i = 0; i < finalMsg.length; i++){
+                msgPos = alphabetChar.indexOf(finalMsg.charAt(i));
+                // Shifts the Vigenère Cipher by the product of the key length provided
+                finalCMsgPos = (key.length * key.length) + (msgPos + keyText[i] + 1);
+                // Makes sure the position of the letter is within the bounds of the alphabet
+                cipherPos[i] = mod((mod(finalCMsgPos, 26) - 1), 26);
+                cipherText += alphabetChar.charAt(cipherPos[i]);
+            }
+            document.getElementById("finalMessage").innerHTML = "The encrypted message is '" + cipherText + "'";
+            document.getElementById("messageValue").value = cipherText;
+            return cipherText;
+        }
+
+        function decryptMsg(key, msg){
+            // Initialize key positions that will be used to change original key
+            let keyText = [];
+            let plainPos = [];
+            let finalMsgPos = 0;
+            plainText = "";
+            
+            if (document.getElementById("keyValue").value == "" || document.getElementById('messageValue').value == ""){
+                document.getElementById("finalMessage").innerHTML = "The values for either the key or the message is blank, please type in the wanted values";
+                return;
+            }
+
+            keyText[0] = alphabetChar.indexOf(key.charAt(0));
+            for (var h = 1; h < msg.length; h++){
+                keyText[h] = alphabetChar.indexOf(key.charAt(h % key.length));
+            }
+
+            for (var i = 0; i < msg.length; i++){
+                msgPos = alphabetChar.indexOf(msg.charAt(i));
+                finalMsgPos = (msgPos - keyText[i] + 1) - (key.length * key.length);
+                plainPos[i] =mod((mod(finalMsgPos, 26) - 1), 26);
+                plainText += alphabetChar.charAt(plainPos[i]);
+            }
+            document.getElementById("finalMessage").innerHTML = "The decrypted message is '" + plainText + "'";
+            document.getElementById("messageValue").value = plainText;
+        }
+  </script>
+</body>
+</html>
