@@ -115,7 +115,7 @@
             for (var h = 1; h < finalMsg.length; h++){
                 keyText[h] = alphabetChar.indexOf(key.charAt(h % key.length));
             }
-            //Vigenère Cipher encryption algorithm
+            //Vigenère Cipher decryption algorithm
             for (var i = 0; i < finalMsg.length; i++){
                 msgPos = alphabetChar.indexOf(finalMsg.charAt(i));
                 finalMsgPos = (msgPos - keyText[i] + 1) - (key.length * key.length);
